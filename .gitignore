@@ -1,4 +1,5 @@
 tests/*
 !tests/*.c
+!tests/*.h
 !tests/Kyuafile
 !tests/Makefile

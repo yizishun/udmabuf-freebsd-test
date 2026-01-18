@@ -5,10 +5,10 @@ it contains some simple udmabuf test and a selftest ported from linux
 
 ## Prerequisites
 
-Ensure you have a C compiler and the `kyua` testing framework installed.
+Ensure you have a C compiler and the `kyua` `atf` testing framework installed.
 
 ```sh
-pkg install kyua
+pkg install kyua atf
 ```
 
 ## Build Instructions
