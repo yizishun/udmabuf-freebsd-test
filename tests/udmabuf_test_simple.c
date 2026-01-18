@@ -15,7 +15,7 @@
 ATF_TC(open_close);
 ATF_TC_HEAD(open_close, tc)
 {
-	atf_tc_set_md_var(tc, "descr", "Checks if /dev/udmabuf0 can be opened and closed");
+	atf_tc_set_md_var(tc, "descr", "Checks if /dev/udmabuf can be opened and closed");
 	atf_tc_set_md_var(tc, "require.kmods", "dmabuf udmabuf");
 }
 
@@ -23,16 +23,16 @@ ATF_TC_BODY(open_close, tc)
 {
 	int fd;
 
-	fd = open("/dev/udmabuf0", O_RDWR);
+	fd = open("/dev/udmabuf", O_RDWR);
 	if (fd == -1) {
 		if (errno == ENOENT)
-			atf_tc_fail("Device /dev/udmabuf0 not found; module might not be loaded");
+			atf_tc_fail("Device /dev/udmabuf not found; module might not be loaded");
 		else
-			atf_tc_fail("Failed to open /dev/udmabuf0: %s", strerror(errno));
+			atf_tc_fail("Failed to open /dev/udmabuf: %s", strerror(errno));
 	}
 
 	if (close(fd) == -1)
-		atf_tc_fail("Failed to close /dev/udmabuf0: %s", strerror(errno));
+		atf_tc_fail("Failed to close /dev/udmabuf: %s", strerror(errno));
 }
 
 /*
@@ -53,10 +53,10 @@ ATF_TC_BODY(basic_info, tc)
 	int fd;
 	struct stat st;
 
-	fd = open("/dev/udmabuf0", O_RDWR);
+	fd = open("/dev/udmabuf", O_RDWR);
 	if (fd == -1) {
 		if (errno == ENOENT)
-			atf_tc_fail("Device /dev/udmabuf0 not found");
+			atf_tc_fail("Device /dev/udmabuf not found");
 		atf_tc_fail("Open failed: %s", strerror(errno));
 	}
 
@@ -68,7 +68,7 @@ ATF_TC_BODY(basic_info, tc)
 	/* Check if it is a character device */
 	if (!S_ISCHR(st.st_mode)) {
 		close(fd);
-		atf_tc_fail("/dev/udmabuf0 is not a character device");
+		atf_tc_fail("/dev/udmabuf is not a character device");
 	}
 
 	close(fd);

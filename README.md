@@ -17,7 +17,7 @@ Navigate to the `tests` directory and run `make` to compile the test programs.
 
 ```sh
 cd tests
-make
+make SYSDIR=/path/to/freebsd-src/sys DRMKMOD_DIR=/path/to/drm-kmod
 ```
 
 ## Running Tests
@@ -50,4 +50,24 @@ To clean up the build artifacts:
 
 ```sh
 make clean
+```
+
+## TODO
+now the case is
+```
+kyua test
+udmabuf_test:basic_info  ->  skipped: Requires root privileges  [0.000s]
+udmabuf_test:open_close  ->  skipped: Required kmods are not loaded: udmabuf.  [0.001s]
+udmabuf_test_linux:create_list_check  ->  skipped: Required kmods are not loaded: udmabuf.  [0.001s]
+udmabuf_test_linux:huge_table_check  ->  skipped: Required kmods are not loaded: udmabuf.  [0.001s]
+udmabuf_test_linux:huge_table_pin_check  ->  skipped: Required kmods are not loaded: udmabuf.  [0.001s]
+udmabuf_test_linux:memfd_check  ->  skipped: Required kmods are not loaded: udmabuf.  [0.001s]
+udmabuf_test_linux:normal_case_check  ->  skipped: Required kmods are not loaded: udmabuf.  [0.001s]
+udmabuf_test_linux:offset_align_check  ->  skipped: Required kmods are not loaded: udmabuf.  [0.001s]
+udmabuf_test_linux:size_align_check  ->  skipped: Required kmods are not loaded: udmabuf.  [0.001s]
+
+Results file id is home_yzs_freebsd_udmabuf-freebsd-test_tests.20260118-121018-954444
+Results saved to /home/yzs/.kyua/store/results.home_yzs_freebsd_udmabuf-freebsd-test_tests.20260118-121018-954444.db
+
+0/9 passed (0 broken, 0 failed, 9 skipped)
 ```
