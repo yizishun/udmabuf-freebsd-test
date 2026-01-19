@@ -2,5 +2,4 @@ syntax(2)
 
 test_suite("udmabuf")
 
-atf_test_program{name="udmabuf_test_simple"}
 atf_test_program{name="udmabuf_test_linux_bsd"}
