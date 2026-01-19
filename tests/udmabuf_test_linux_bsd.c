@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -23,7 +24,7 @@
 #define NUM_SCATTERS    4 /* number of scatter entries */
 
 static struct udmabuf_create
-init_create(uint32_t memfd, off64_t offset, off64_t size, uint32_t flags)
+init_create(int memfd, uint64_t offset, uint64_t size, uint32_t flags)
 {
 	struct udmabuf_create create;
 
@@ -35,7 +36,7 @@ init_create(uint32_t memfd, off64_t offset, off64_t size, uint32_t flags)
 	return create;
 }
 
-static int init_memfd(off64_t size, bool hpage)
+static int init_memfd(off_t size, bool hpage)
 {
 	int memfd;
 	unsigned int flags = MFD_ALLOW_SEALING;
@@ -50,7 +51,7 @@ static int init_memfd(off64_t size, bool hpage)
 	return memfd;
 }
 
-static int create_udmabuf_scatter_list(int devfd, int *memfds, int count, off_t size_per_fd)
+static int create_udmabuf_scatter_list(int devfd, int *memfds, int count, uint64_t size_per_fd)
 {
 	struct udmabuf_create_list *list;
 	int ubuf_fd, i;
@@ -72,7 +73,7 @@ static int create_udmabuf_scatter_list(int devfd, int *memfds, int count, off_t 
 	return ubuf_fd;
 }
 
-static void *mmap_fd(int fd, off64_t size)
+static void *mmap_fd(int fd, size_t size)
 {
 	void *addr;
 
@@ -115,8 +116,8 @@ ATF_TC_BODY(offset_align_check, tc)
 {
 	struct udmabuf_create create;
 	int devfd, memfd;
-	unsigned int page_size = getpagesize();
-	unsigned int mem_size = page_size * NUM_PAGES;
+	size_t page_size = getpagesize();
+	size_t mem_size = page_size * NUM_PAGES;
 
 	ATF_REQUIRE((devfd = open("/dev/udmabuf", O_RDWR)) >= 0);
 	memfd = init_memfd(mem_size, false);
@@ -141,8 +142,8 @@ ATF_TC_BODY(size_align_check, tc)
 {
 	struct udmabuf_create create;
 	int devfd, memfd;
-	unsigned int page_size = getpagesize();
-	unsigned int mem_size = page_size * NUM_PAGES;
+	size_t page_size = getpagesize();
+	size_t mem_size = page_size * NUM_PAGES;
 
 	ATF_REQUIRE((devfd = open("/dev/udmabuf", O_RDWR)) >= 0);
 	memfd = init_memfd(mem_size, false);
@@ -167,8 +168,8 @@ ATF_TC_BODY(memfd_check, tc)
 {
 	struct udmabuf_create create;
 	int devfd, memfd;
-	unsigned int page_size = getpagesize();
-	unsigned int mem_size = page_size * NUM_PAGES;
+	size_t page_size = getpagesize();
+	size_t mem_size = page_size * NUM_PAGES;
 
 	ATF_REQUIRE((devfd = open("/dev/udmabuf", O_RDWR)) >= 0);
 	create = init_create(0, 0, mem_size, UDMABUF_FLAGS_CLOEXEC);
@@ -192,8 +193,8 @@ ATF_TC_BODY(normal_case_check, tc)
 {
 	struct udmabuf_create create;
 	int devfd, memfd, ubuf_fd;
-	unsigned int page_size = getpagesize();
-	unsigned int mem_size = page_size * NUM_PAGES;
+	size_t page_size = getpagesize();
+	size_t mem_size = page_size * NUM_PAGES;
 
 	ATF_REQUIRE((devfd = open("/dev/udmabuf", O_RDWR)) >= 0);
 	memfd = init_memfd(mem_size, false);
@@ -221,9 +222,9 @@ ATF_TC_BODY(create_list_check, tc)
 	int memfds[NUM_SCATTERS];
 	void *ubuf_map_addr, *memfd_map_addr;
 	int i;
-	unsigned int page_size = getpagesize();
-	unsigned int size_per_fd = page_size * NUM_PAGES;
-	off_t total_size = size_per_fd * NUM_SCATTERS;
+	size_t page_size = getpagesize();
+	size_t size_per_fd = page_size * NUM_PAGES;
+	size_t total_size = size_per_fd * NUM_SCATTERS;
 
 	ATF_REQUIRE((devfd = open("/dev/udmabuf", O_RDWR)) >= 0);
 
@@ -261,9 +262,9 @@ ATF_TC_BODY(huge_table_check, tc)
 	int memfds[NUM_SCATTERS];
 	void *ubuf_map_addr, *memfd_map_addr;
 	int i;
-	unsigned int page_size = getpagesize() * 512; /* 2 MB */
-	unsigned int size_per_fd = page_size * NUM_PAGES;
-	off_t total_size = size_per_fd * NUM_SCATTERS;
+	size_t page_size = getpagesize() * 512; /* 2 MB */
+	size_t size_per_fd = page_size * NUM_PAGES;
+	size_t total_size = size_per_fd * NUM_SCATTERS;
 
 	ATF_REQUIRE((devfd = open("/dev/udmabuf", O_RDWR)) >= 0);
 
@@ -301,9 +302,9 @@ ATF_TC_BODY(huge_table_pin_check, tc)
 	int memfds[NUM_SCATTERS];
 	void *ubuf_map_addr, *memfd_map_addr;
 	int i;
-	unsigned int page_size = getpagesize() * 512; /* 2 MB */
-	unsigned int size_per_fd = page_size * NUM_PAGES;
-	off_t total_size = size_per_fd * NUM_SCATTERS;
+	size_t page_size = getpagesize() * 512; /* 2 MB */
+	size_t size_per_fd = page_size * NUM_PAGES;
+	size_t total_size = size_per_fd * NUM_SCATTERS;
 
 	ATF_REQUIRE((devfd = open("/dev/udmabuf", O_RDWR)) >= 0);
 
