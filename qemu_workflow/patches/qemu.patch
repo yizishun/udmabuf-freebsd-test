@@ -1,0 +1,63 @@
+diff --git a/hw/display/meson.build b/hw/display/meson.build
+index 90e6c041bd..050400d559 100644
+--- a/hw/display/meson.build
++++ b/hw/display/meson.build
+@@ -68,7 +68,7 @@ if config_all_devices.has_key('CONFIG_VIRTIO_GPU')
+   virtio_gpu_ss = ss.source_set()
+   virtio_gpu_ss.add(when: 'CONFIG_VIRTIO_GPU',
+                     if_true: [files('virtio-gpu-base.c', 'virtio-gpu.c'), pixman])
+-  if host_os == 'linux'
++  if host_os == 'linux' or host_os == 'freebsd'
+     virtio_gpu_ss.add(files('virtio-gpu-udmabuf.c'))
+   else
+     virtio_gpu_ss.add(files('virtio-gpu-udmabuf-stubs.c'))
+diff --git a/hw/display/virtio-gpu-udmabuf.c b/hw/display/virtio-gpu-udmabuf.c
+index d804f321aa..e37df01d6e 100644
+--- a/hw/display/virtio-gpu-udmabuf.c
++++ b/hw/display/virtio-gpu-udmabuf.c
+@@ -22,7 +22,12 @@
+ #include "system/ramblock.h"
+ #include "system/hostmem.h"
+ #include <sys/ioctl.h>
++#ifdef __linux__
+ #include <linux/memfd.h>
++#endif /* __linux__ */
++#ifdef __FreeBSD__
++#include <sys/mman.h>
++#endif /* __FreeBSD__ */
+ #include "qemu/memfd.h"
+ #include "standard-headers/linux/udmabuf.h"
+ #include "standard-headers/drm/drm_fourcc.h"
+diff --git a/include/ui/console.h b/include/ui/console.h
+index 98feaa58bd..2f31904e1a 100644
+--- a/include/ui/console.h
++++ b/include/ui/console.h
+@@ -467,7 +467,7 @@ bool vnc_display_update(DisplayUpdateOptionsVNC *arg, Error **errp);
+ /* input.c */
+ int index_from_key(const char *key, size_t key_length);
+ 
+-#ifdef CONFIG_LINUX
++#if defined(CONFIG_LINUX) || defined(CONFIG_FREEBSD)
+ /* udmabuf.c */
+ int udmabuf_fd(void);
+ #endif
+diff --git a/ui/meson.build b/ui/meson.build
+index 6371422c46..430a1fff94 100644
+--- a/ui/meson.build
++++ b/ui/meson.build
+@@ -24,10 +24,14 @@ system_ss.add([spice_headers, files('spice-module.c')])
+ system_ss.add(when: spice_protocol, if_true: files('vdagent.c'))
+ 
+ if host_os == 'linux'
+-  system_ss.add(files('input-linux.c', 'udmabuf.c'))
++  system_ss.add(files('input-linux.c'))
+ endif
+ system_ss.add(when: cocoa, if_true: files('cocoa.m'))
+ 
++if host_os == 'linux' or host_os == 'freebsd'
++  system_ss.add(files('udmabuf.c'))
++endif
++
+ vnc_ss = ss.source_set()
+ vnc_ss.add(files(
+   'vnc.c',
