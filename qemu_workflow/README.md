@@ -13,12 +13,13 @@ this is the purpose of this foler
 gmake patch QEMU_SRC=/path/to/qemu
 
 # build and run
-gmake build_and_run QEMU_SRC=/path/to/qemu DRM_KMOD=/path/to/drm-kmod
+gmake build QEMU_SRC=/path/to/qemu DRM_KMOD=/path/to/drm-kmod
+gmake run QEMU_SRC=/path/to/qemu DRM_KMOD=/path/to/drm-kmod
 ```
 
 # More
 The critical line in qemu run.sh is `-device virtio-gpu-pci,blob=true,hostmem=2048M`
-which enable virtio-gpu-pci(should not use virtio-gpu-gl-pci, which not use udmabuf)
+which enable virtio-gpu-pci (Don't use virtio-gpu-gl-pci, which will not use udmabuf)
 
 
 # TODO
