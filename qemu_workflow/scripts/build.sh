@@ -21,6 +21,7 @@ cd "$QEMU_SRC_DIR/build"
              --enable-debug \
              --enable-opengl \
              --enable-gtk \
+             --enable-virglrenderer \
              --extra-cflags="-I/usr/local/include" \
              --extra-cflags="-I$DRM_KMOD_DIR/linuxkpi/gplv2/include/uapi" \
              --extra-ldflags="-L/usr/local/lib -linotify"

@@ -1,4 +1,4 @@
-NCPU := $(shell sysctl -n hw.ncpu)
+NCPU:=$(shell sysctl -n hw.ncpu)
 
 .PHONY: all patch configure build run clean
 
