@@ -1,4 +1,5 @@
 NCPU:=$(shell sysctl -n hw.ncpu)
+CUR=$(shell pwd)
 
 .PHONY: all patch configure build run clean
 
@@ -7,7 +8,7 @@ all: patch build_and_run
 patch:
 	@echo ">>> Applying patches..."
 	@if [ -d "patches" ] && [ "$$(ls -A patches/*.patch 2>/dev/null)" ]; then \
-		cd $(QEMU_SRC) && git am ../patches/*.patch; \
+		cd $(QEMU_SRC) && git apply $(CUR)/patches/*.patch; \
 	else \
 		echo "No patches found in patches/, skipping."; \
 	fi
