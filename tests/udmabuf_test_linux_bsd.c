@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
+#include "atf-c/macros.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
